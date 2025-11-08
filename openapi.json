@@ -1,0 +1,118 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "FactorExpert Central Asia API",
+    "version": "1.0.0",
+    "description": "API для получения данных и аналитики по факторингу, торговому финансированию и SCF в странах Центральной Азии. Используется GPT-агентом FactorExpert Central Asia."
+  },
+  "servers": [
+    {
+      "url": "https://egofilm3@gmail.com.github.io/factorexpert-ca-api",
+      "description": "GitHub Pages server for FactorExpert Central Asia"
+    }
+  ],
+  "paths": {
+    "/factor/market-data": {
+      "get": {
+        "summary": "Рыночные данные по факторингу",
+        "description": "Возвращает рыночные данные, тренды и объёмы факторинга в выбранной стране Центральной Азии.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "description": "Код страны (KZ, UZ, KG, TJ, TM, CA)",
+            "schema": {
+              "type": "string",
+              "enum": ["KZ", "UZ", "KG", "TJ", "TM", "CA"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с рыночными данными или формализованным отказом.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketDataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/factor/legal-framework": {
+      "get": {
+        "summary": "Правовое регулирование факторинга",
+        "description": "Возвращает обзор правового регулирования факторинга в выбранной стране Центральной Азии.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["KZ", "UZ", "KG", "TJ", "TM"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с описанием или отказом.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalFrameworkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MarketDataResponse": {
+        "type": "object",
+        "properties": {
+          "refused": {
+            "type": "boolean",
+            "description": "Если true — данные не предоставляются (несоответствие тематике, региону или источникам)."
+          },
+          "message": {
+            "type": "string",
+            "description": "Стандартный текст отказа или описание предоставленных данных."
+          },
+          "country": { "type": "string" },
+          "data": {
+            "type": "object",
+            "description": "Основные рыночные показатели факторинга и SCF.",
+            "additionalProperties": true
+          }
+        },
+        "required": ["refused"]
+      },
+      "LegalFrameworkResponse": {
+        "type": "object",
+        "properties": {
+          "refused": {
+            "type": "boolean",
+            "description": "Если true — данные не предоставляются."
+          },
+          "message": {
+            "type": "string",
+            "description": "Описание или отказ."
+          },
+          "country": { "type": "string" },
+          "legal_summary": {
+            "type": "string",
+            "description": "Текстовое описание правового регулирования факторинга."
+          }
+        },
+        "required": ["refused"]
+      }
+    }
+  }
+}
